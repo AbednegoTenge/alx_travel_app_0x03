@@ -29,8 +29,18 @@ generation.
 
 ## Project Structure
 
-project_root/ │ ├── app/ │ ├── models.py │ ├── serializers.py │ ├──
-views.py │ ├── urls.py │ ├── project/ │ ├── settings.py │ ├── urls.py │
+project_root/ 
+│ 
+├── app/ 
+│ ├── models.py 
+│ ├── serializers.py 
+│ ├──views.py 
+│ ├── urls.py 
+│ 
+├── project/ 
+│ ├── settings.py 
+│ ├── urls.py 
+│
 └── README.md
 
 ## Installation & Setup
@@ -40,9 +50,9 @@ views.py │ ├── urls.py │ ├── project/ │ ├── settings.py 
 git clone https://github.com/yourusername/yourproject.git cd yourproject
 
 ### 2. Create a virtual environment
-
-python -m venv env source env/bin/activate \# macOS/Linux
-env`\Scripts`{=tex}`\activate        `{=tex}\# Windows
+python -m venv venv
+source venv/bin/activate       # macOS/Linux
+venv\\Scripts\\activate        # Windows
 
 ### 3. Install dependencies
 
