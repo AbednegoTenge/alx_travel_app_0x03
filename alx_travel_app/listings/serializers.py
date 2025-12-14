@@ -1,15 +1,31 @@
 from rest_framework import serializers
-from django.contrib.auth.models import User
-from .models import Listing, Booking
+from .models import Listing, Booking, Payment
+from django.contrib.auth import get_user_model
+from django.contrib.auth.password_validation import validate_password
 
+
+
+User = get_user_model()
 
 class UserSerializer(serializers.ModelSerializer):
     """Serializer for User model (used in nested relationships)."""
+    password2 = serializers.CharField(write_only=True)
     
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'first_name', 'last_name']
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'role', 'password', 'password2']
         read_only_fields = ['id']
+
+    def validate(self, attrs):
+        if attrs['password'] != attrs['password2']:
+            raise serializers.ValidationError({'password': 'Passwords must match.'})
+        validate_password(attrs['password'])
+        return attrs
+
+    def create(self, validated_data):
+        validated_data.pop('password2')
+        password = validated_data.pop('password')
+        return User.objects.create_user(password=password, **validated_data)
 
 
 class ListingSerializer(serializers.ModelSerializer):
@@ -242,3 +258,38 @@ class BookingCreateSerializer(serializers.ModelSerializer):
         
         return data
 
+
+class PaymentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Payment
+        fields = [
+            'id',
+            'booking',
+            'transaction_id',
+            'chapa_reference',
+            'checkout_url',
+            'amount',
+            'currency',
+            'payment_method',
+            'status',
+            'first_name',
+            'last_name',
+            'email',
+            'phone_number',
+            'payment_initiated_at',
+            'payment_completed_at',
+            'failure_reason',
+            'created_at',
+            'updated_at',
+        ]
+        read_only_fields = ['id', 'transaction_id', 'status', 'checkout_url', 'payment_initiated_at', 'payment_completed_at', 'created_at', 'updated_at']
+
+
+class ChapaPaymentInitSerializer(serializers.Serializer):
+    booking = serializers.PrimaryKeyRelatedField(queryset=Booking.objects.all())
+    amount = serializers.DecimalField(max_digits=10, decimal_places=2)
+    currency = serializers.CharField(max_length=3, default='GHC')
+    first_name = serializers.CharField(max_length=100)
+    last_name = serializers.CharField(max_length=100)
+    email = serializers.EmailField()
+    phone_number = serializers.CharField(max_length=20, required=False, allow_blank=True)

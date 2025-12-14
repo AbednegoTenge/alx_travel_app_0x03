@@ -95,6 +95,9 @@ GET /bookings/{id}/\
 PUT /bookings/{id}/\
 DELETE /bookings/{id}/
 
+testing for payment
+![alt text](image.png)
+
 ## License
 
 MIT License

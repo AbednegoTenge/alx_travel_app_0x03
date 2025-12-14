@@ -5,3 +5,5 @@ django-cors-headers
 drf-yasg
 celery
 mysqlclient
+dotenv
+requests

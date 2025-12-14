@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     'drf_yasg',
 
     #local apps
-    'listings'
+    'alx_travel_app.listings'
 ]
 
 CELERY_BROKER_URL = 'amqp://localhost'  # default RabbitMQ broker
@@ -115,6 +115,8 @@ DATABASES = {
         'PORT': env('DB_PORT'),
     }
 }
+
+AUTH_USER_MODEL = 'listings.User'
 
 
 
