@@ -7,6 +7,7 @@ from rest_framework import status
 from .services.chapa_service import ChapaService
 from django.contrib.auth import get_user_model
 from rest_framework.decorators import api_view
+from .tasks import send_booking_confirmation_email
 
 User = get_user_model()
 
@@ -26,6 +27,32 @@ class BookingViewSet(ModelViewSet):
     queryset = Booking.objects.all()
     serializer_class = BookingSerializer
 
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        booking = serilizer.save()
+
+        booking_details = f"""
+            Listing: {booking.listing.title}
+            Check-in: {booking.check_in}
+            Check-out: {booking.check_out}
+            Guests: {booking.guest}
+            Total Price: {booking.total_price}
+        """
+
+        # Send booking confirmation email asynchronously
+        send_booking_confirmation_email.delay(
+            user_email=booking.user.email,
+            booking_details=str(booking)
+        )
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(
+            serializer.data,
+            status=status.HTTP_201_CREATED,
+            headers=headers
+        )
 
 class PaymentViewSet(ModelViewSet):
     queryset = Payment.objects.all()
