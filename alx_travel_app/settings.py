@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     #third party apps
     'rest_framework',
     'corsheaders',
-    'drf_yasg',
+    'drf_spectacular',
 
     #local apps
     'alx_travel_app.listings'
@@ -99,7 +99,17 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'ALX Travel App API',
+    'DESCRIPTION': 'API for managing booking and listings',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'COMPONENT_SPLIT_REQUEST': True,
+}
+
 
 
 # Database

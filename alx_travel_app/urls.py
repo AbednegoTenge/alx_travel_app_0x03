@@ -16,26 +16,39 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework import permissions
-from drf_yasg.views import get_schema_view
-from drf_yasg import openapi
+from rest_framework.permissions import AllowAny
 from .listings.views import payment_return
-
-
-schema_views = get_schema_view(
-    openapi.Info(
-        title="ALX Travel APP API",
-        default_version='v1',
-        description="API documentation for ALX Travel App",
-        contact=openapi.Contact(email="abednegotenge180@gmail.com"),
-        license=openapi.License(name="MIT License"),
-    ),
-    public=True
-)
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/listings/', include('alx_travel_app.listings.urls')),
-    path('swagger/', schema_views.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    path('payment/return/', payment_return, name='payment-return')
+    path('payment/return/', payment_return, name='payment-return'),
+    # OpenAPI schema (public)
+    path(
+        'api/schema/',
+        SpectacularAPIView.as_view(permission_classes=[AllowAny]),
+        name='schema'
+    ),
+
+    # ✅ Public Swagger UI at /swagger/
+    path(
+        'swagger/',
+        SpectacularSwaggerView.as_view(
+            url_name='schema',
+            permission_classes=[AllowAny],
+        ),
+        name='swagger-ui'
+    ),
+
+    # ReDoc (optional, also public)
+    path(
+        'api/redoc/',
+        SpectacularRedocView.as_view(
+            url_name='schema',
+            permission_classes=[AllowAny],
+        ),
+        name='redoc'
+    ),
+
 ]

@@ -7,3 +7,4 @@ celery
 mysqlclient
 dotenv
 requests
+drf-spectacular
