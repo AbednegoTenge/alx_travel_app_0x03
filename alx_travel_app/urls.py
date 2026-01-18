@@ -30,8 +30,7 @@ schema_views = get_schema_view(
         contact=openapi.Contact(email="abednegotenge180@gmail.com"),
         license=openapi.License(name="MIT License"),
     ),
-    public=True,
-    permission_classes=(permissions.AllowAny)
+    public=True
 )
 
 urlpatterns = [
